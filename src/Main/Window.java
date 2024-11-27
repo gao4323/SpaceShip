@@ -11,6 +11,8 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
 import Graphics.Assets;
+import input.KeyBoard;
+import states.GameState;
 
 /**
  *
@@ -29,6 +31,8 @@ public class Window extends JFrame implements Runnable{
     private double delta = 0;
     private int AVERAGEFPS = FPS;
     
+    private GameState gameState;
+    private KeyBoard keyBoard;
     
     //Funcion
     public Window(){
@@ -40,6 +44,7 @@ public class Window extends JFrame implements Runnable{
         setVisible(true);
         
         canvas = new Canvas();
+        keyBoard = new KeyBoard();
         
         canvas.setPreferredSize(new Dimension(WIDTH,HEIGHT));
         canvas.setMaximumSize(new Dimension(WIDTH,HEIGHT));
@@ -47,7 +52,7 @@ public class Window extends JFrame implements Runnable{
         canvas.setFocusable(true);
         
         add(canvas);
-        
+        canvas.addKeyListener(keyBoard);
     }
     
     
@@ -59,7 +64,8 @@ public class Window extends JFrame implements Runnable{
     
     //Funciones
     private void update(){
-        
+        keyBoard.update();
+        gameState.update();
     }
     
     private void draw(){
@@ -75,9 +81,12 @@ public class Window extends JFrame implements Runnable{
         //------------------
         
         g.setColor(Color.BLACK);
+        
         g.fillRect(0, 0, WIDTH, HEIGHT);
-        g.drawImage(Assets.player, 100, 100, null);
-        g.drawString(""+AVERAGEFPS, 10, 10);
+        
+        gameState.draw(g);
+        
+        g.drawString(""+AVERAGEFPS, 10, 20);
         
         //-----------------
         g.dispose();
@@ -87,6 +96,7 @@ public class Window extends JFrame implements Runnable{
     
     private void init(){
         Assets.init();
+        gameState = new GameState();
     }
     
     @Override
