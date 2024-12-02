@@ -8,6 +8,7 @@ import Graphics.Assets;
 import Main.Window;
 import Math.Vector2D;
 import GameObject.MovingObject;
+import Graphics.Sound;
 import input.KeyBoard;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -27,19 +28,45 @@ public class Player extends MovingObject{
     private boolean accelerating =false;
     private Chronometer fireRate;
     
+    private boolean spawning, visibe;
     
+    private Chronometer spawnTime, flickerTime;
+    
+    private Sound shoot, loose;
     
     public Player(Vector2D position, Vector2D velocity, double maxVel, BufferedImage texture, GameState gameState) {
         super(position, velocity, maxVel, texture, gameState);
         heading = new Vector2D(0, 1);
         acceleration = new Vector2D();
         fireRate = new Chronometer();
+        spawnTime = new Chronometer();
+        flickerTime = new Chronometer();
+        shoot = new Sound(Assets.playerShoot);
+        loose = new Sound(Assets.playerLoose);
     }
     
     @Override
     public void update() {
         
-        if(KeyBoard.SHOOT && !fireRate.isRunning()){
+        if(!spawnTime.isRunning()){
+            
+            spawning = false;
+            visibe = true;
+            
+        }
+        
+        if(spawning){
+            
+            if(!flickerTime.isRunning()){
+                
+                flickerTime.run(Constants.FLICKER_TIME);
+                visibe = !visibe;
+                
+            }
+            
+        }
+        
+        if(KeyBoard.SHOOT && !fireRate.isRunning() && !spawning){
             gameState.getMovingObjects().add(0, new Laser(
                     getCenter().add(heading.scale(width)), 
                     heading, 
@@ -49,6 +76,11 @@ public class Player extends MovingObject{
                     gameState
             ));
             fireRate.run(Constants.FIRERATE);
+            shoot.play();
+        }
+        
+        if(shoot.getFramesPosition() > 8500){
+            shoot.stop();
         }
         
         if(KeyBoard.RIGHT)
@@ -85,10 +117,32 @@ public class Player extends MovingObject{
         
         fireRate.update();
         collidesWhidt();
+        spawnTime.update();
+        flickerTime.update();
     }
-
+    
+    @Override
+    public void Destroy(){
+        spawning = true;
+        spawnTime.run(Constants.SPAWNING_TIME);
+        loose.play();
+        resetValues();
+        gameState.subtractLife();
+    }
+    
+    private void resetValues(){
+        angle = 0;
+        velocity = new Vector2D();
+        position = new Vector2D(Constants.WIDTH/2 - Assets.player.getWidth()/2,
+                Constants.HEIGHT/2 - Assets.player.getHeight()/2);
+    }
+    
     @Override
     public void draw(Graphics g) {
+        
+        if(!visibe)
+            return;
+        
        Graphics2D g2d = (Graphics2D)g;
        
        AffineTransform at1 = AffineTransform.getTranslateInstance(position.getX() + width/2 + 5, position.getY() + height/2 + 10);
@@ -112,4 +166,7 @@ public class Player extends MovingObject{
        g2d.drawImage(texture, at, null);
     }
     
+    public boolean isSpawning(){
+        return spawning;
+    }
 }

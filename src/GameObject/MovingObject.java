@@ -1,12 +1,13 @@
-/*
+ /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package GameObject;
 
 import GameObject.GameObject;
+import Graphics.Assets;
+import Graphics.Sound;
 import Math.Vector2D;
-import java.awt.Graphics;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public abstract class MovingObject extends GameObject{
     protected int width;
     protected int height;
     protected GameState gameState;
+    private Sound explosion;
     
     public MovingObject(Vector2D position, Vector2D velocity, double maxVel, BufferedImage texture, GameState gameState) {
         super(position, texture);
@@ -33,6 +35,7 @@ public abstract class MovingObject extends GameObject{
         width = texture.getWidth();
         height = texture.getHeight();
         angle = 0;
+        explosion = new Sound(Assets.explosion);
     }
     
     protected void collidesWhidt(){
@@ -57,7 +60,15 @@ public abstract class MovingObject extends GameObject{
     
     private void objectCollision(MovingObject a, MovingObject b){
         
+        if(a instanceof Player &&((Player)a).isSpawning()){
+            return;
+        }
+        if(b instanceof Player &&((Player)b).isSpawning()){
+            return;
+        }
+        
         if(!(a instanceof Meteor && b instanceof Meteor)){
+            gameState.playExplosion(getCenter());
             a.Destroy();
             b.Destroy();
         }
@@ -66,6 +77,9 @@ public abstract class MovingObject extends GameObject{
     
     protected void Destroy(){
         gameState.getMovingObjects().remove(this);
+        if(!(this instanceof Laser))
+            explosion.play();
+        
     }
     
     protected Vector2D getCenter(){

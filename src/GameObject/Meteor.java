@@ -1,4 +1,4 @@
-/*
+ /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
@@ -46,6 +46,7 @@ public class Meteor extends MovingObject{
     @Override
     public void Destroy(){
         gameState.divideMeteor(this);
+        gameState.addScore(Constants.METEOR_SCORE, position);
         super.Destroy();
     }
     
