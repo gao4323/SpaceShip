@@ -14,78 +14,137 @@ import javax.sound.sampled.Clip;
  */
 public class Assets {
     
-    public static BufferedImage player;
-    
-    //effects
-    public static BufferedImage spead;
-    public static BufferedImage[] expl = new BufferedImage[9];
-    
-    //Lasers
-    public static BufferedImage blueLaser, greenLaser, redLaser;
-    public static BufferedImage[] bigs = new BufferedImage[4];
-    public static BufferedImage[] meds = new BufferedImage[2];
-    public static BufferedImage[] smalls = new BufferedImage[2];
-    public static BufferedImage[] tinies = new BufferedImage[2];
-    
-    //ufo
-    
-    public static BufferedImage ufo;
-    
-    //Numbers
-    
-    public static BufferedImage[] numbers = new BufferedImage[11];
-    public static BufferedImage life;
-    
-    //fonts
-    
-    public static Font fontBig;
-    public static Font fontMed;
-    
-    public static Clip backgroundMusic, explosion, playerLoose, playerShoot, ufoShoot;
-    
-    public static void init(){
-        player = Loader.ImageLoader("/Ships/player.png");
-        
-        spead = Loader.ImageLoader("/effects/fire08.png");
-        
-        blueLaser = Loader.ImageLoader("/Lasers/laserBlue01.png");
-        
-        greenLaser = Loader.ImageLoader("/Lasers/laserGreen11.png");
-        
-        redLaser = Loader.ImageLoader("/Lasers/laserRed01.png");
-        
-        for(int i = 0; i < bigs.length; i++)
-            bigs[i] = Loader.ImageLoader("/meteors/meteorGrey_big"+(i+1)+".png");
-        
-	for(int i = 0; i < meds.length; i++)
-            meds[i] = Loader.ImageLoader("/meteors/meteorGrey_med"+(i+1)+".png");
-        
-	for(int i = 0; i < smalls.length; i++)
-            smalls[i] = Loader.ImageLoader("/meteors/meteorGrey_small"+(i+1)+".png");
-        
-        for(int i = 0; i < tinies.length; i++)
-            tinies[i] = Loader.ImageLoader("/meteors/meteorGrey_tiny"+(i+1)+".png");
-        
-        for(int i = 0; i < expl.length; i++)
-            expl[i] = Loader.ImageLoader("/explosion/"+ i +".png");
-        
-        ufo = Loader.ImageLoader("/Ships/ufo.png");
-        
-        for(int i = 0; i < numbers.length; i++)
-            numbers[i] = Loader.ImageLoader("/Numbers/"+"numeral"+ i +".png");
-        
-        life = Loader.ImageLoader("/Others/playerLife1_blue.png");
-        
-        fontBig = Loader.loadFont("/fonts/kenvector_future.ttf/", 42);
-        
-        fontMed = Loader.loadFont("/fonts/kenvector_future.ttf/", 20);
-        
-        backgroundMusic = Loader.loadSound("/sounds/backgroundMusic.wav");
-        explosion = Loader.loadSound("/sounds/explosion.wav");
-	playerLoose = Loader.loadSound("/sounds/playerLoose.wav");
-	playerShoot = Loader.loadSound("/sounds/playerShoot.wav");
-	ufoShoot = Loader.loadSound("/sounds/ufoShoot.wav");
+   public static boolean loaded = false;
+	public static float count = 0;
+	public static float MAX_COUNT = 57;
+	
+	
+	public static BufferedImage player;
+	public static BufferedImage doubleGunPlayer;
+	
+	// effects
+	
+	public static BufferedImage speed;
+	
+	public static BufferedImage[] shieldEffect = new BufferedImage[3];
+	
+	// explosion
+	
+	public static BufferedImage[] exp = new BufferedImage[9];
+	
+	// lasers
+	
+	public static BufferedImage blueLaser, greenLaser, redLaser;
+	
+	// Meteors
+	
+	public static BufferedImage[] bigs = new BufferedImage[4];
+	public static BufferedImage[] meds = new BufferedImage[2];
+	public static BufferedImage[] smalls = new BufferedImage[2];
+	public static BufferedImage[] tinies = new BufferedImage[2];
+	
+	// ufo
+	
+	public static BufferedImage ufo;
+	
+	// numbers
+	
+	public static BufferedImage[] numbers = new BufferedImage[11];
+	
+	public static BufferedImage life;
+	
+	// fonts
+	
+	public static Font fontBig;
+	public static Font fontMed;
+	
+	public static Clip backgroundMusic, explosion, playerLoose, playerShoot, ufoShoot, powerUp;
+	
+	// ui
+	
+	public static BufferedImage blueBtn;
+	public static BufferedImage greyBtn;
+	
+	// power ups
+	
+	public static BufferedImage orb, doubleScore, doubleGun, fastFire, shield, star;
+	
+	public static void init()
+	{
+		player = loadImage("/Ships/player.png");
                 
-    }
-    
+		doubleGunPlayer = loadImage("/Ships/doubleGunPlayer.png");
+		
+		speed = loadImage("/effects/fire08.png");
+		
+		blueLaser = loadImage("/Lasers/laserBlue01.png");
+		
+		greenLaser = loadImage("/Lasers/laserGreen11.png");
+		
+		redLaser = loadImage("/Lasers/laserRed01.png");
+		
+		ufo = loadImage("/Ships/ufo.png");
+		
+		life = loadImage("/Others/playerLife1_blue.png");
+		
+		fontBig = loadFont("/fonts/kenvector_future.ttf", 42);
+		
+		fontMed = loadFont("/fonts/kenvector_future.ttf", 20);
+		
+		for(int i = 0; i < 3; i++)
+			shieldEffect[i] = loadImage("/effects/shield" + (i + 1) +".png"); 
+		
+		for(int i = 0; i < bigs.length; i++)
+			bigs[i] = loadImage("/meteors/meteorGrey_big"+(i+1)+".png");
+		
+		for(int i = 0; i < meds.length; i++)
+			meds[i] = loadImage("/meteors/meteorGrey_med"+(i+1)+".png");
+		
+		for(int i = 0; i < smalls.length; i++)
+			smalls[i] = loadImage("/meteors/meteorGrey_small"+(i+1)+".png");
+		
+		for(int i = 0; i < tinies.length; i++)
+			tinies[i] = loadImage("/meteors/meteorGrey_tiny"+(i+1)+".png");
+		
+		for(int i = 0; i < exp.length; i++)
+			exp[i] = loadImage("/explosion/"+i+".png");
+		
+		for(int i = 0; i < numbers.length; i++)
+			numbers[i] = loadImage("/Numbers/numeral"+i+".png");
+		
+		backgroundMusic = loadSound("/sounds/backgroundMusic.wav");
+		explosion = loadSound("/sounds/explosion.wav");
+		playerLoose = loadSound("/sounds/playerLoose.wav");
+		playerShoot = loadSound("/sounds/playerShoot.wav");
+		ufoShoot = loadSound("/sounds/ufoShoot.wav");
+		powerUp = loadSound("/sounds/powerUp.wav");
+		
+		greyBtn = loadImage("/ui/grey_button.png");
+		blueBtn = loadImage("/ui/blue_button.png");
+		
+		orb = loadImage("/powers/orb.png");
+		doubleScore = loadImage("/powers/doubleScore.png");
+		doubleGun = loadImage("/powers/doubleGun.png");
+		fastFire = loadImage("/powers/fastFire.png");
+		star = loadImage("/powers/star.png");
+		shield = loadImage("/powers/shield.png");
+		
+		// ===========================================================
+		
+		loaded = true;
+		
+	}
+
+	public static BufferedImage loadImage(String path) {
+		count ++;
+		return Loader.ImageLoader(path);
+	}
+	public static Font loadFont(String path, int size) {
+		count ++;
+		return Loader.loadFont(path, size);
+	}
+	public static Clip loadSound(String path) {
+		count ++;
+		return Loader.loadSound(path);
+	}
 }
